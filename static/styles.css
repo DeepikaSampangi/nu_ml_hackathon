@@ -79,3 +79,36 @@ button:hover {
     font-size: 14px;
     color: #ff6b6b;
 }
+
+/* File List Styling */
+.file-list {
+    margin: 20px 0;
+    padding: 0;
+}
+
+.file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+/* Remove Button */
+.remove-button {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.remove-button:hover {
+    background: #c0392b;
+}

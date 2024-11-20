@@ -6,13 +6,54 @@
     <title>Upload Videos</title>
     <link rel="stylesheet" href="/static/styles.css">
     <script>
-        async function uploadVideos() {
-            const input = document.getElementById('videoInput');
-            const formData = new FormData();
+        // List to keep track of files
+        let selectedFiles = [];
 
-            for (const file of input.files) {
-                formData.append('videos', file);
+        // Handle file input change
+        function handleFileInput(event) {
+            const files = Array.from(event.target.files);
+            selectedFiles.push(...files);
+            updateFileList();
+        }
+
+        // Update the displayed file list
+        function updateFileList() {
+            const fileListContainer = document.getElementById('fileList');
+            fileListContainer.innerHTML = ''; // Clear the current list
+
+            selectedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+
+                const fileName = document.createElement('span');
+                fileName.textContent = file.name;
+
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'Remove';
+                removeButton.className = 'remove-button';
+                removeButton.onclick = () => removeFile(index);
+
+                fileItem.appendChild(fileName);
+                fileItem.appendChild(removeButton);
+                fileListContainer.appendChild(fileItem);
+            });
+        }
+
+        // Remove a file from the list
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            updateFileList();
+        }
+
+        // Upload files to the server
+        async function uploadVideos() {
+            if (selectedFiles.length === 0) {
+                alert('No files selected for upload.');
+                return;
             }
+
+            const formData = new FormData();
+            selectedFiles.forEach(file => formData.append('videos', file));
 
             const response = await fetch('/upload', {
                 method: 'POST',
@@ -20,21 +61,17 @@
             });
 
             const result = await response.json();
-            const alertBox = document.getElementById('alertBox');
-            alertBox.textContent = JSON.stringify(result, null, 2);
+            alert(JSON.stringify(result, null, 2));
         }
     </script>
 </head>
-    
 <body>
     <div class="container">
         <h1>Upload and Process Videos</h1>
         <label for="videoInput" class="label">Choose Videos</label>
-        <input type="file" id="videoInput" multiple accept="video/*">
-        <br>
+        <input type="file" id="videoInput" multiple accept="video/*" onchange="handleFileInput(event)">
+        <div id="fileList" class="file-list"></div>
         <button onclick="uploadVideos()">Upload Videos</button>
-        <div id="alertBox" class="alert"></div>
     </div>
 </body>
-
 </html>
